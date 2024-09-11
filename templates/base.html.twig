@@ -8,9 +8,11 @@
         {% endblock %}
 
         {% block javascripts %}
+            {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
     <body>
+        <img src="{{ asset('images/starshop-logo.png') }}" alt="Starship"/>
         {# Place holders for the child templates #}
         {% block body %}{% endblock %}
     </body>
