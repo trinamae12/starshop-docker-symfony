@@ -7,9 +7,9 @@
 <h1>Starshop: your monopoly-busting option for Starship parts!</h1>
 {# More of twig in its own Twig Documentation #}
 <div>
-    Browse through {{ numberOfStarships }} starships!
+    Browse through {{ ships|length }} starships!
 
-    {% if numberOfStarships > 400 %}
+    {% if ships|length > 2 %}
         {# Sample comment #}
         <p> That's a shipload of ships! </p>
     {% endif %}
