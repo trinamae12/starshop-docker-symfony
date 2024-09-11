@@ -1,0 +1,40 @@
+{# extends from a twig template #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Starshop: Beam up some parts!{% endblock %}
+
+{% block body %}
+<h1>Starshop: your monopoly-busting option for Starship parts!</h1>
+{# More of twig in its own Twig Documentation #}
+<div>
+    Browse through {{ numberOfStarships }} starships!
+
+    {% if numberOfStarships > 400 %}
+        {# Sample comment #}
+        <p> That's a shipload of ships! </p>
+    {% endif %}
+</div>
+
+<div>
+    <h2>My Ship</h2>
+    <table>
+        <tr>
+            <th>Name</th>
+            <td>{{ myShip.name }}</td>
+        </tr>
+        <tr>
+            <th>Class</th>
+            <td>{{ myShip.class }}</td>
+        </tr>
+        <tr>
+            {# Usage of upper filter #}
+            <th>Captain</th>
+            <td>{{ myShip.captain | upper}}</td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td>{{ myShip.status }}</td>
+        </tr>
+    </table>
+</div>
+{% endblock %}
