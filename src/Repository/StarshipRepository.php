@@ -16,6 +16,39 @@ class StarshipRepository extends ServiceEntityRepository
         parent::__construct($registry, Starship::class);
     }
 
+    public function createStarship(Starship $starship)
+    {
+        $entityManager = $this->getEntityManager();
+        $entityManager->persist($starship);
+        $entityManager->flush();
+    }
+
+    // Find all users
+    public function findAllStarships(): array
+    {
+        return $this->findAll();
+    }
+
+    public function findStarship($id)
+    {
+        return $this->find($id);
+    }
+
+    public function updateStarship(Starship $starship)
+    {
+        $entityManager = $this->getEntityManager();
+        $entityManager->persist($starship);
+        $entityManager->flush();
+    }
+
+    // Delete a user
+    public function deleteStarship(Starship $starship): void
+    {
+        $entityManager = $this->getEntityManager();
+        $entityManager->remove($starship);
+        $entityManager->flush();
+    }
+
     //    /**
     //     * @return Starship[] Returns an array of Starship objects
     //     */
@@ -28,16 +61,6 @@ class StarshipRepository extends ServiceEntityRepository
     //            ->setMaxResults(10)
     //            ->getQuery()
     //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Starship
-    //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
     //        ;
     //    }
 }
