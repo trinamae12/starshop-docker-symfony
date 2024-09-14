@@ -58,7 +58,7 @@ class StarshipApiController extends AbstractController
     }
 
     #[Route('/{id<\d+>}', methods: ['GET'])]
-    public function get(int $id, StarshipRepository $repository): Response
+    public function get(int $id, StarshipRepository $repository): JsonResponse
     {   
         $starship = $repository->findStarship($id);
 
@@ -66,7 +66,9 @@ class StarshipApiController extends AbstractController
             throw $this->createNotFoundException('Starship not found!');
         }
 
-        return $this->json($starship);
+        $data = $this->serializer->serialize($starship, 'json');
+
+        return new JsonResponse($data, JsonResponse::HTTP_OK, [], true);
     }
 
     #[Route('/{id<\d+>}', methods: ['PUT'])]
