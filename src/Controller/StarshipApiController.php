@@ -26,7 +26,7 @@ class StarshipApiController extends AbstractController
         $this->serializer = $serializer;
     }
 
-    #[Route('', methods: ['GET'])]
+    // #[Route('', methods: ['GET'])]
     public function getCollection(StarshipRepository $repository): JsonResponse
     {
         $starships = $repository->findAllStarships();
@@ -34,6 +34,39 @@ class StarshipApiController extends AbstractController
 
         return new JsonResponse($data, JsonResponse::HTTP_OK, [], true);
         // return $this->json($data);
+    }
+
+    #[Route('', methods: ['GET'])]
+    public function getPaginatedStarships(Request $request): JsonResponse
+    {
+        $page = max($request->query->getInt('page', 1), 1);
+        $limit = max($request->query->getInt('limit', 5), 1);
+
+        $paginator = $this->repository->findPaginatedStarships($page, $limit);
+
+        $totalItems = count($paginator);
+        $totalPages = ceil($totalItems/$limit);
+
+        $data = [];
+        foreach($paginator as $starship) {
+            $data[] = [
+                'id' => $starship->getId(),
+                'name' => $starship->getName(),
+                'class' => $starship->getClass(),
+                'captain' => $starship->getCaptain(),
+                'status' => $starship->getStatus(),
+            ];
+        }
+
+        return new JsonResponse([
+            'data' => $data,
+            'meta' => [
+                'totalItems' => $totalItems,
+                'itemsPerPage' => $limit,
+                'totalPages' => $totalPages,
+                'currentPage' => $page
+            ]
+        ], JsonResponse::HTTP_OK, ['Content-Type' => 'application/json']);
     }
 
     #[Route('', methods: ['POST'])]
