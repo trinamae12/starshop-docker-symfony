@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Starship;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -27,6 +28,28 @@ class StarshipRepository extends ServiceEntityRepository
     public function findAllStarships(): array
     {
         return $this->findAll();
+    }
+
+    /**
+     * Get paginated users
+     * 
+     * @param int $page  The current page (-1 based)
+     * @param int $limit Number of results per page
+     * 
+     * @return Paginator
+     */
+    public function findPaginatedStarships(int $page, int $limit): Paginator 
+    {
+        $query = $this->createQueryBuilder('ships')
+            ->orderBy('ships.id', 'ASC')
+            ->getQuery(); // Returns query object
+        
+        $query->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit);
+
+        //dd(var_dump($query));
+
+        return new Paginator($query);
     }
 
     public function findStarship($id)
