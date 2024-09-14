@@ -8,26 +8,32 @@ use App\Repository\StarshipRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 
 #[Route('api/starships')]
 class StarshipApiController extends AbstractController
 {
     private $repository;
-    public function __construct(StarshipRepository $repository)
+    private $serializer;
+    public function __construct(StarshipRepository $repository, SerializerInterface $serializer)
     {
         $this->repository = $repository;
+        $this->serializer = $serializer;
     }
 
     #[Route('', methods: ['GET'])]
-    public function getCollection(StarshipRepository $repository): Response
+    public function getCollection(StarshipRepository $repository): JsonResponse
     {
         $starships = $repository->findAllStarships();
+        $data = $this->serializer->serialize($starships, 'json');
 
-        return $this->json($starships);
+        return new JsonResponse($data, JsonResponse::HTTP_OK, [], true);
+        // return $this->json($data);
     }
 
     #[Route('', methods: ['POST'])]
