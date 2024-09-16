@@ -64,7 +64,7 @@ class StarshipRepository extends ServiceEntityRepository
         $entityManager->flush();
     }
 
-    // Delete a user
+    // Delete a starship
     public function deleteStarship(Starship $starship): void
     {
         $entityManager = $this->getEntityManager();
@@ -72,6 +72,22 @@ class StarshipRepository extends ServiceEntityRepository
         $entityManager->flush();
     }
 
+    /**
+     * Search a starship
+     * 
+     */
+    public function findStarshipBySearchQuery(string $query, int $limit, int $offset): Paginator
+    {
+        $results = $this->createQueryBuilder('s')
+            ->where('s.name LIKE :query')
+            ->setParameter('query', '%' .$query. '%')
+            ->setMaxResults($limit)
+            ->setFirstResult($offset)
+            ->getQuery();
+            // ->getResult();
+        
+        return new Paginator($results);
+    }
     //    /**
     //     * @return Starship[] Returns an array of Starship objects
     //     */
