@@ -136,4 +136,44 @@ class StarshipApiController extends AbstractController
 
         return new Response('Starship successfully deleted', Response::HTTP_OK);
     }
+
+    #[Route('/search', methods: ['GET'])]
+    public function search(Request $request): JsonResponse
+    {
+        $page = max($request->query->getInt('page', 1), 1);
+
+        $query = $request->query->get('name');
+        $limit = $request->query->getInt('limit', 5);
+        $offset = $request->query->getInt('offset', 0);
+
+        if (!$query) {
+            $this->getPaginatedStarships($request);
+        }
+
+        $results = $this->repository->findStarshipBySearchQuery($query, $limit, $offset);
+
+        $totalItems = count($results);
+        $totalPages = ceil($totalItems/$limit);
+
+        $data = [];
+        foreach($results as $result) {
+            $data[] = [
+                'id' => $result->getId(),
+                'name' => $result->getName(),
+                'class' => $result->getClass(),
+                'captain' => $result->getCaptain(),
+                'status' => $result->getStatus(),
+            ];
+        }
+        //dd($this->serializer->serialize($results, 'json'));
+        return new JsonResponse([
+            'data' => $data,
+            'meta' => [
+                'totalItems' => $totalItems,
+                'itemsPerPage' => $limit,
+                'totalPages' => $totalPages,
+                'currentPage' => $page
+            ]
+        ], JsonResponse::HTTP_OK);
+    }
 }
